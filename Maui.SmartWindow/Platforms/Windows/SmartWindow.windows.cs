@@ -1,5 +1,5 @@
 ﻿namespace Maui.SmartWindow;
 
-public partial class SmartWindow : Window
+public partial class SmartWindow
 {
 }

@@ -19,7 +19,7 @@ public static class MauiConfiguration
 	{
         app.ConfigureMauiHandlers(handlers =>
         {
-
+			handlers.AddHandler(typeof(SmartWindow), typeof(SmartWindowHandler));
         });
     }
 

@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maui.SmartWindow.ArchPropos
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maui.SmartWindow", "Maui.SmartWindow\Maui.SmartWindow.csproj", "{3EDCEAE6-BAA2-4C4D-B555-228E513A37C4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maui.Interop", "Maui.Interop\Maui.Interop.csproj", "{1319E9FC-271F-43AE-BABD-8A3518A31E92}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{3EDCEAE6-BAA2-4C4D-B555-228E513A37C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3EDCEAE6-BAA2-4C4D-B555-228E513A37C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3EDCEAE6-BAA2-4C4D-B555-228E513A37C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1319E9FC-271F-43AE-BABD-8A3518A31E92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1319E9FC-271F-43AE-BABD-8A3518A31E92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1319E9FC-271F-43AE-BABD-8A3518A31E92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1319E9FC-271F-43AE-BABD-8A3518A31E92}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
