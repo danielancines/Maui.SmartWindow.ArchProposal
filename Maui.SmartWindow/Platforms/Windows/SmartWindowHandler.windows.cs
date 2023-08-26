@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Maui.Handlers;
 
-namespace Maui.SmartWindow.Platforms.Windows;
+namespace Maui.SmartWindow;
 
-public partial class SmartWindowHandler
+public partial class SmartWindowHandler : WindowHandler
 {
 }
