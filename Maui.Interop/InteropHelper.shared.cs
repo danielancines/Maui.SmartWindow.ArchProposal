@@ -8,9 +8,9 @@ namespace Maui.Interop
     {
         public static void SetParent(Window child, Window parent)
         {
-            
+
 #if WINDOWS
-            NativeMethods.SetParent(child.GetHandle(), parent.GetHandle());
+            WindowsNativeMethods.SetParent(child.GetHandle(), parent.GetHandle());
 #endif
         }
     }

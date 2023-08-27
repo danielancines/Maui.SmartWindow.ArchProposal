@@ -5,7 +5,7 @@ using System.Runtime.Versioning;
 namespace Maui.Interop
 {
     // All the code in this file is only included on Windows.
-    public static partial class NativeMethods
+    public static class WindowsNativeMethods
     {
         [DllImport("USER32.dll", ExactSpelling = true, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
