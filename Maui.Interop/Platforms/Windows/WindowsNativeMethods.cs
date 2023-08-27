@@ -10,6 +10,11 @@ namespace Maui.Interop
         [DllImport("USER32.dll", ExactSpelling = true, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         [SupportedOSPlatform("windows5.0")]
-        public static extern HWND SetParent(HWND hWndChild, HWND hWndNewParent);
+        internal static extern HWND SetParent(HWND hWndChild, HWND hWndNewParent);
+
+        [DllImport("USER32.dll", ExactSpelling = true, EntryPoint = "SetWindowLongW", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        [SupportedOSPlatform("windows5.0")]
+        internal static extern int SetWindowLong(HWND hWnd, WINDOW_LONG_PTR_INDEX nIndex, int dwNewLong);
     }
 }

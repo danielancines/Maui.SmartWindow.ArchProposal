@@ -31,5 +31,11 @@ namespace Maui.SmartWindow.ArchProposal
         {
             this._window.ParentWindow = this.Window;
         }
+
+        private void SetPositionButton_Clicked(object sender, EventArgs e)
+        {
+            (this._window as Window).X = 10;
+            (this._window as Window).Y = 10;
+        }
     }
 }

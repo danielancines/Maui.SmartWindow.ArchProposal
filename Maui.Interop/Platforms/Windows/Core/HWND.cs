@@ -1,6 +1,6 @@
 ﻿namespace Maui.Interop.Platforms.Windows.Core;
 
-public readonly partial struct HWND : IEquatable<HWND>
+internal readonly partial struct HWND : IEquatable<HWND>
 {
     internal readonly IntPtr Value;
 

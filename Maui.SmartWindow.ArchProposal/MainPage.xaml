@@ -24,6 +24,10 @@
                     Text="Set Parent"
                     Clicked="SetParentButton_Clicked"/>
 
+        <Button x:Name="SetPositionButton"
+                    Text="Set Position"
+                    Clicked="SetPositionButton_Clicked"/>
+
     </HorizontalStackLayout>
 
 </ContentPage>

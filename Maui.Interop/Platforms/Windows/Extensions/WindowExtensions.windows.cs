@@ -5,7 +5,7 @@ namespace Maui.Interop.Extensions;
 
 public static partial class WindowExtensions
 {
-    public static HWND GetHandle(this Window window)
+    internal static HWND GetHandle(this Window window)
     {
         if (window == null)
             throw new ArgumentNullException("Window cannot be null");
@@ -16,6 +16,6 @@ public static partial class WindowExtensions
         if (window.Handler.PlatformView is MauiWinUIWindow mauiWinUIWindow)
             return new HWND(mauiWinUIWindow.GetWindowHandle());
 
-        throw new InvalidOperationException("Window is not ready yet");
+        throw new InvalidOperationException("Window is not ready yet, OpenWindow must to be called");
     }
 }

@@ -64,7 +64,7 @@ public partial class SmartWindow : Window, ISmartWindow
 
     private void SetParent(Window parentWindow)
     {
-        this.Handler.Invoke(nameof(SmartWindowHandler.SetParent), parentWindow);
+        this.Handler.Invoke("SetParent", parentWindow);
     }
 
     #endregion
