@@ -1,0 +1,4 @@
+﻿SetParent
+SetWindowLong
+GetWindowRect
+ScreenToClient

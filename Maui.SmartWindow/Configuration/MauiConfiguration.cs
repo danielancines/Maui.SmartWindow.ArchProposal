@@ -2,24 +2,24 @@
 
 public static class MauiConfiguration
 {
-	#region Initial Config
+    #region Initial Config
 
-	public static MauiAppBuilder UseSmartWindow(this MauiAppBuilder app)
-	{
-		ConfigureHandlers(app);
+    public static MauiAppBuilder UseSmartWindow(this MauiAppBuilder app)
+    {
+        ConfigureHandlers(app);
 
-		return app;
-	}
+        return app;
+    }
 
-	#endregion
+    #endregion
 
-	#region Methods
+    #region Methods
 
-	private static void ConfigureHandlers(MauiAppBuilder app)
-	{
+    private static void ConfigureHandlers(MauiAppBuilder app)
+    {
         app.ConfigureMauiHandlers(handlers =>
         {
-			handlers.AddHandler(typeof(SmartWindow), typeof(SmartWindowHandler));
+            handlers.AddHandler(typeof(SmartWindow), typeof(SmartWindowHandler));
         });
     }
 
