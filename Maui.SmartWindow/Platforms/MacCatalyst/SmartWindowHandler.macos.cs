@@ -5,9 +5,18 @@ namespace Maui.SmartWindow
     // All the code in this file is only included on Mac Catalyst.
     public partial class SmartWindowHandler : WindowHandler
     {
-        public static void SetParent(IWindowHandler handler, IWindow window, object parent)
+        #region Public Methods
+
+        public static void MapXProperty(IWindowHandler handler, IWindow window)
         {
-            //TODO MacOS doenst have MDI
+
         }
+
+        public static void MapYProperty(IWindowHandler handler, IWindow window)
+        {
+
+        }
+
+        #endregion
     }
 }

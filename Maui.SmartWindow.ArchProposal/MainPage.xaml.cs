@@ -19,6 +19,9 @@ namespace Maui.SmartWindow.ArchProposal
         private void OpenNewWindowButton_Clicked(object sender, EventArgs e)
         {
             this._window = new SmartWindow();
+            //this._window.ParentWindow = this.Window;
+            this._window.X = 200;
+            this._window.Y = 200;
             this._window?.Show();
         }
 
@@ -34,8 +37,8 @@ namespace Maui.SmartWindow.ArchProposal
 
         private void SetPositionButton_Clicked(object sender, EventArgs e)
         {
-            (this._window as Window).X = 10;
-            (this._window as Window).Y = 10;
+            this._window.X += 10;
+            this._window.Y += 10;
         }
     }
 }

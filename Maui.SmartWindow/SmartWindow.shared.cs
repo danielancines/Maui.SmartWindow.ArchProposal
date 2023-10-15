@@ -1,8 +1,10 @@
 ﻿using Maui.SmartWindow.Core;
 
 namespace Maui.SmartWindow;
-public partial class SmartWindow : Window, ISmartWindow
+public partial class SmartWindow : Window, ISmartWindow, IDisposable
 {
+    #region Constructor
+
     public SmartWindow() : this(new ContentPage())
     {
 
@@ -13,7 +15,43 @@ public partial class SmartWindow : Window, ISmartWindow
         this.Page = page;
     }
 
+    #endregion
+
     #region ISmartWindow Members
+
+    private double _x;
+    public new double X
+    {
+        get
+        {
+            return this._x;
+        }
+        set
+        {
+            if (this._x == value)
+                return;
+
+            this._x = value;
+            base.X = value;
+        }
+    }
+
+    private double _y;
+    public new double Y
+    {
+        get
+        {
+            return _y;
+        }
+        set
+        {
+            if (this._y == value)
+                return;
+
+            this._y = value;
+            base.Y = value;
+        }
+    }
 
     private View _content;
     public View Content
@@ -29,8 +67,8 @@ public partial class SmartWindow : Window, ISmartWindow
         }
     }
 
-    private Window _parentWindow;
-    public Window ParentWindow
+    private IWindow _parentWindow;
+    public IWindow ParentWindow
     {
         get { return _parentWindow; }
         set
@@ -39,9 +77,10 @@ public partial class SmartWindow : Window, ISmartWindow
                 return;
 
             _parentWindow = value;
-            this.SetParent(value);
         }
     }
+
+    public bool IsMDIChild => this.ParentWindow != null;
 
     public void Show()
     {
@@ -53,6 +92,12 @@ public partial class SmartWindow : Window, ISmartWindow
         Application.Current.CloseWindow(this);
     }
 
+    public void Dispose()
+    {
+        this.Close();
+        this.Handler?.DisconnectHandler();
+    }
+
     #endregion
 
     #region Private Methods
@@ -60,11 +105,6 @@ public partial class SmartWindow : Window, ISmartWindow
     {
         if (this.Page is ContentPage page)
             page.Content = content;
-    }
-
-    private void SetParent(Window parentWindow)
-    {
-        this.Handler.Invoke("SetParent", parentWindow);
     }
 
     #endregion

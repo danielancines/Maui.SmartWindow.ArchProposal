@@ -1,6 +1,6 @@
 ﻿using Maui.Interop.Extensions;
 #if WINDOWS
-using Maui.Interop.Platforms.Windows.Core;
+using Windows.Win32;
 #endif
 
 namespace Maui.Interop
@@ -13,8 +13,9 @@ namespace Maui.Interop
 
 #if WINDOWS
             var childHandle = child.GetHandle();
-            WindowsNativeMethods.SetParent(childHandle, parent.GetHandle());
-            WindowsNativeMethods.SetWindowLong(childHandle, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE, -20);
+            var parentHandle = parent.GetHandle();
+            PInvoke.SetParent(childHandle, parentHandle);
+            PInvoke.SetWindowLong(childHandle, Windows.Win32.UI.WindowsAndMessaging.WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE, -20);
 #endif
         }
     }
