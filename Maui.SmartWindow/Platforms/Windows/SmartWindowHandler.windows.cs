@@ -10,6 +10,7 @@ public partial class SmartWindowHandler : WindowHandler
 {
     #region Fields
 
+    private bool _updatingPositionByPointer;
     private AppWindow _appWindow;
     private ISmartWindow _smartWindow;
 
@@ -21,6 +22,7 @@ public partial class SmartWindowHandler : WindowHandler
     {
         base.ConnectHandler(platformView);
         this.InitializeMainFields();
+        this.HookEvents();
 
         if (this._smartWindow.IsMDIChild)
             this.InitializeWindowAsMDIChild();
@@ -28,6 +30,7 @@ public partial class SmartWindowHandler : WindowHandler
 
     protected override void DisconnectHandler(Microsoft.UI.Xaml.Window platformView)
     {
+        this.UnHookEvents();
         base.DisconnectHandler(platformView);
     }
 
@@ -35,23 +38,39 @@ public partial class SmartWindowHandler : WindowHandler
 
     #region Public Methods
 
-    public static void MapXProperty(IWindowHandler handler, IWindow window)
+    public static void MapMdiXProperty(IWindowHandler handler, IWindow window)
     {
         if (handler is SmartWindowHandler smartWindowHandler && window is ISmartWindow smartWindow)
-            smartWindowHandler.UpdatePosition((int)smartWindow.X, (int)smartWindow.Y);
+        {
+            if (smartWindowHandler._updatingPositionByPointer)
+                return;
+
+            if (!smartWindow.IsMDIChild)
+                throw new InvalidOperationException("MdiX cannot be used if SmartWindow is not a MDIChild, use X property");
+
+            smartWindowHandler.UpdatePosition((int)smartWindow.MdiX, (int)smartWindow.MdiY);
+        }
     }
 
-    public static void MapYProperty(IWindowHandler handler, IWindow window)
+    public static void MapMdiYProperty(IWindowHandler handler, IWindow window)
     {
         if (handler is SmartWindowHandler smartWindowHandler && window is ISmartWindow smartWindow)
-            smartWindowHandler.UpdatePosition((int)smartWindow.X, (int)smartWindow.Y);
+        {
+            if (smartWindowHandler._updatingPositionByPointer)
+                return;
+
+            if (!smartWindow.IsMDIChild)
+                throw new InvalidOperationException("MdiY cannot be used if SmartWindow is not a MDIChild, use Y property");
+
+            smartWindowHandler.UpdatePosition((int)smartWindow.MdiX, (int)smartWindow.MdiY);
+        }
     }
 
     #endregion
 
-    #region Internal Methods
+    #region Private Methods
 
-    internal void UpdatePosition(int x, int y)
+    private void UpdatePosition(int x, int y)
     {
         if (this._smartWindow == null || this._appWindow == null)
             return;
@@ -60,13 +79,9 @@ public partial class SmartWindowHandler : WindowHandler
             this._appWindow.Move(new Windows.Graphics.PointInt32(x, y));
     }
 
-    #endregion
-
-    #region Private Methods
-
     private void InitializeMainFields()
     {
-        this._appWindow = (this.PlatformView as MauiWinUIWindow).GetAppWindow();
+        this._appWindow = this.PlatformView.GetAppWindow();
         this._smartWindow = this.VirtualView as ISmartWindow;
     }
 
@@ -77,6 +92,53 @@ public partial class SmartWindowHandler : WindowHandler
             presenter.SetBorderAndTitleBar(true, false);
 
         InteropHelper.SetParent(this.VirtualView as Window, this._smartWindow.ParentWindow as Window);
+    }
+
+    private void SetPosition(IWindowHandler handler, IWindow window, object parameter)
+    {
+        if (handler is SmartWindowHandler smartWindowHandler && parameter is Point position && window is ISmartWindow smartWindow)
+        {
+            smartWindow.MdiX = position.X;
+            smartWindow.MdiY = position.Y;
+        }
+    }
+
+    private void HookEvents()
+    {
+        if (this.VirtualView is Window window)
+            window.Created += Window_Created;
+    }
+
+    private void Window_Created(object sender, EventArgs e)
+    {
+        if (this.VirtualView is Window window)
+            window.SizeChanged += Window_SizeChanged;
+    }
+
+    private void UnHookEvents()
+    {
+        if (this.VirtualView is Window window)
+        {
+            window.Created -= Window_Created;
+            window.SizeChanged -= Window_SizeChanged;
+        }
+    }
+
+    private void Window_SizeChanged(object sender, EventArgs e)
+    {
+        if (this._smartWindow == null || this._smartWindow.ParentWindow == null)
+            return;
+
+        this._updatingPositionByPointer = true;
+        var relativeTo = InteropHelper.GetWindowRelativePositionTo(this.VirtualView as Window, this._smartWindow.ParentWindow as Window);
+        if (this._smartWindow is SmartWindow smartWindow)
+        {
+            smartWindow.MdiX = relativeTo.X;
+            smartWindow.MdiY = relativeTo.Y;
+            smartWindow.OnPositionChanged();
+        }
+
+        this._updatingPositionByPointer = false;
     }
 
     #endregion

@@ -3,6 +3,18 @@
 namespace Maui.SmartWindow;
 public partial class SmartWindow : Window, ISmartWindow, IDisposable
 {
+    #region Events
+
+    readonly WeakEventManager _weakEventManager = new();
+
+    public event EventHandler<EventArgs> PositionChanged
+    {
+        add => this._weakEventManager.AddEventHandler(value);
+        remove => this._weakEventManager.RemoveEventHandler(value);
+    }
+
+    #endregion
+
     #region Constructor
 
     public SmartWindow() : this(new ContentPage())
@@ -17,40 +29,22 @@ public partial class SmartWindow : Window, ISmartWindow, IDisposable
 
     #endregion
 
-    #region ISmartWindow Members
+    #region Properties
 
-    private double _x;
-    public new double X
+    public bool IsMDIChild => this.ParentWindow != null;
+
+    public static readonly BindableProperty MdiXProperty = BindableProperty.Create(nameof(ISmartWindow.MdiX), typeof(double), typeof(SmartWindow), 0d, BindingMode.OneWay);
+    public double MdiX
     {
-        get
-        {
-            return this._x;
-        }
-        set
-        {
-            if (this._x == value)
-                return;
-
-            this._x = value;
-            base.X = value;
-        }
+        get { return (double)GetValue(MdiXProperty); }
+        set { SetValue(MdiXProperty, value); }
     }
 
-    private double _y;
-    public new double Y
+    public static readonly BindableProperty MdiYProperty = BindableProperty.Create(nameof(MdiY), typeof(double), typeof(SmartWindow), 0d, BindingMode.OneWay);
+    public double MdiY
     {
-        get
-        {
-            return _y;
-        }
-        set
-        {
-            if (this._y == value)
-                return;
-
-            this._y = value;
-            base.Y = value;
-        }
+        get { return (double)GetValue(MdiYProperty); }
+        set { SetValue(MdiYProperty, value); }
     }
 
     private View _content;
@@ -76,11 +70,55 @@ public partial class SmartWindow : Window, ISmartWindow, IDisposable
             if (_parentWindow == value)
                 return;
 
+            if (value == null)
+                this.UnHookParentWindowEvents(this._parentWindow);
+            else
+                this.HookParentWindowEvents(value);
+
             _parentWindow = value;
         }
     }
 
-    public bool IsMDIChild => this.ParentWindow != null;
+    #endregion
+
+    #region Internal Methods
+
+    internal void OnPositionChanged()
+    {
+        this._weakEventManager.HandleEvent(this, EventArgs.Empty, nameof(this.PositionChanged));
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    private void UnHookParentWindowEvents(IWindow parentWindow)
+    {
+        if (parentWindow is Window window)
+            window.Destroying -= ParentWindow_Destroying;
+    }
+
+    private void HookParentWindowEvents(IWindow parentWindow)
+    {
+        if (parentWindow is Window window)
+            window.Destroying += ParentWindow_Destroying;
+    }
+
+    private void ParentWindow_Destroying(object sender, EventArgs e)
+    {
+        this.Close();
+        this.Dispose();
+    }
+
+    private void SetPageContent(View content)
+    {
+        if (this.Page is ContentPage page)
+            page.Content = content;
+    }
+
+    #endregion
+
+    #region Public Methods
 
     public void Show()
     {
@@ -94,17 +132,12 @@ public partial class SmartWindow : Window, ISmartWindow, IDisposable
 
     public void Dispose()
     {
-        this.Close();
         this.Handler?.DisconnectHandler();
     }
 
-    #endregion
-
-    #region Private Methods
-    private void SetPageContent(View content)
+    public void SetPosition(int x, int y)
     {
-        if (this.Page is ContentPage page)
-            page.Content = content;
+        this.Handler?.Invoke(nameof(ISmartWindow.SetPosition), new Point(x, y));
     }
 
     #endregion

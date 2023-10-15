@@ -7,12 +7,17 @@ namespace Maui.SmartWindow
     {
         #region Public Methods
 
-        public static void MapXProperty(IWindowHandler handler, IWindow window)
+        public static void MapMdiXProperty(IWindowHandler handler, IWindow window)
         {
 
         }
 
-        public static void MapYProperty(IWindowHandler handler, IWindow window)
+        public static void MapMdiYProperty(IWindowHandler handler, IWindow window)
+        {
+
+        }
+
+        private void SetPosition(IWindowHandler handler, IWindow window, object parameter)
         {
 
         }

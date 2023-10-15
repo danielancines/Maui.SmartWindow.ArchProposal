@@ -1,4 +1,5 @@
 ﻿using Maui.SmartWindow.Core;
+using System.Diagnostics;
 
 namespace Maui.SmartWindow.ArchProposal
 {
@@ -19,10 +20,16 @@ namespace Maui.SmartWindow.ArchProposal
         private void OpenNewWindowButton_Clicked(object sender, EventArgs e)
         {
             this._window = new SmartWindow();
-            //this._window.ParentWindow = this.Window;
-            this._window.X = 200;
-            this._window.Y = 200;
+            this._window.PositionChanged += _window_PositionChanged;
+            this._window.ParentWindow = this.Window;
+            this._window.MdiX = 200;
+            this._window.MdiY = 200;
             this._window?.Show();
+        }
+
+        private void _window_PositionChanged(object sender, EventArgs e)
+        {
+            Debug.WriteLine(this._window.MdiY);
         }
 
         private void CloseWindowButton_Clicked(object sender, EventArgs e)
@@ -37,8 +44,9 @@ namespace Maui.SmartWindow.ArchProposal
 
         private void SetPositionButton_Clicked(object sender, EventArgs e)
         {
-            this._window.X += 10;
-            this._window.Y += 10;
+            //this._window.SetPosition((int)this._window.MdiX + 10, (int)this._window.MdiY + 10);
+            this._window.MdiX += 10;
+            this._window.MdiY += 10;
         }
     }
 }
