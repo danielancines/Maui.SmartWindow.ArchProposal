@@ -3,6 +3,7 @@ using Maui.SmartWindow.Core;
 using Microsoft.Maui.Handlers;
 using Microsoft.Maui.Platform;
 using Microsoft.UI.Windowing;
+using System.Diagnostics;
 
 namespace Maui.SmartWindow;
 
@@ -22,7 +23,7 @@ public partial class SmartWindowHandler : WindowHandler
     {
         base.ConnectHandler(platformView);
         this.InitializeMainFields();
-        this.HookEvents();
+        this.HookEvents(platformView);
 
         if (this._smartWindow.IsMDIChild)
             this.InitializeWindowAsMDIChild();
@@ -30,7 +31,7 @@ public partial class SmartWindowHandler : WindowHandler
 
     protected override void DisconnectHandler(Microsoft.UI.Xaml.Window platformView)
     {
-        this.UnHookEvents();
+        this.UnHookEvents(platformView);
         base.DisconnectHandler(platformView);
     }
 
@@ -103,25 +104,47 @@ public partial class SmartWindowHandler : WindowHandler
         }
     }
 
-    private void HookEvents()
+    private void HookEvents(Microsoft.UI.Xaml.Window platformView)
     {
         if (this.VirtualView is Window window)
             window.Created += Window_Created;
+
+        if (platformView is MauiWinUIWindow mauiWinUIWindow && mauiWinUIWindow.Content is Microsoft.UI.Xaml.UIElement uiElement)
+            uiElement.PointerPressed += Content_PointerPressed;
     }
 
-    private void Window_Created(object sender, EventArgs e)
-    {
-        if (this.VirtualView is Window window)
-            window.SizeChanged += Window_SizeChanged;
-    }
-
-    private void UnHookEvents()
+    private void UnHookEvents(Microsoft.UI.Xaml.Window platformView)
     {
         if (this.VirtualView is Window window)
         {
             window.Created -= Window_Created;
             window.SizeChanged -= Window_SizeChanged;
         }
+
+        if (platformView is MauiWinUIWindow mauiWinUIWindow && mauiWinUIWindow.Content is Microsoft.UI.Xaml.UIElement uiElement)
+            uiElement.PointerPressed -= Content_PointerPressed;
+    }
+
+    private void Content_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+    {
+        if (this.PlatformView is MauiWinUIWindow mauiWinUIWindow && mauiWinUIWindow.Content is Microsoft.UI.Xaml.UIElement uiElement)
+        {
+            var initialClickPoint = e.GetCurrentPoint(uiElement);
+            while (InteropHelper.IsMouseLeftButtonDown)
+            {
+                var point = InteropHelper.CursorPosition;
+                var relativePoint = InteropHelper.GetRelativePositionToWindow(this._smartWindow.ParentWindow as Window, point);
+
+                //7 px are some kind of border on every window
+                this.UpdatePosition((int)relativePoint.X - (int)initialClickPoint.Position.X - 7, (int)relativePoint.Y - (int)initialClickPoint.Position.Y - 7);
+            }
+        }
+    }
+
+    private void Window_Created(object sender, EventArgs e)
+    {
+        if (this.VirtualView is Window window)
+            window.SizeChanged += Window_SizeChanged;
     }
 
     private void Window_SizeChanged(object sender, EventArgs e)

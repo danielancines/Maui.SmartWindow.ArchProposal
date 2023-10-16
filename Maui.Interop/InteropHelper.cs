@@ -1,4 +1,5 @@
-﻿using Maui.Interop.Extensions;
+﻿using Maui.Interop.Core;
+using Maui.Interop.Extensions;
 #if WINDOWS
 using Windows.Win32;
 using Windows.Win32.Foundation;
@@ -46,6 +47,56 @@ namespace Maui.Interop
             return new Rect(location.X, location.Y, rect.right - rect.left, rect.bottom - rect.top);
 #else
             return new Rect(0, 0, 0, 0);
+#endif
+        }
+
+        public static bool IsMouseLeftButtonDown
+        {
+            get
+            {
+#if WINDOWS
+                return PInvoke.GetKeyState(VirtualKeyCodes.VK_LBUTTON) < 0;
+#else
+            return false;
+#endif
+            }
+        }
+
+        public static bool IsMouseRightButtonDown
+        {
+            get
+            {
+#if WINDOWS
+                return PInvoke.GetKeyState(VirtualKeyCodes.VK_RBUTTON) < 0;
+#else
+            return false;
+#endif
+            }
+        }
+
+        public static Point CursorPosition
+        {
+            get
+            {
+#if WINDOWS
+                PInvoke.GetCursorPos(out System.Drawing.Point cursorPosition);
+                return new Point(cursorPosition.X, cursorPosition.Y);
+#else
+            return new Point();
+#endif
+            }
+        }
+
+        public static Point GetRelativePositionToWindow(Window window, Point location)
+        {
+#if WINDOWS
+            var windowHandle = window.GetHandle();
+            System.Drawing.Point locationPoint = new System.Drawing.Point((int)location.X, (int)location.Y);
+            PInvoke.ScreenToClient(windowHandle, ref locationPoint);
+
+            return new Point(locationPoint.X, locationPoint.Y);
+#else
+            return new Point();
 #endif
         }
     }
