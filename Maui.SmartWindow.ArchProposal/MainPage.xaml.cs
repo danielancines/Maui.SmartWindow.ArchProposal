@@ -24,6 +24,9 @@ namespace Maui.SmartWindow.ArchProposal
             this._window.ParentWindow = this.Window;
             this._window.MdiX = 200;
             this._window.MdiY = 200;
+            this._window.Width = 600;
+            this._window.Height = 200;
+
             this._window?.Show();
         }
 
