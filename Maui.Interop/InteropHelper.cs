@@ -57,7 +57,7 @@ namespace Maui.Interop
 #if WINDOWS
                 return PInvoke.GetKeyState(VirtualKeyCodes.VK_LBUTTON) < 0;
 #else
-            return false;
+                return false;
 #endif
             }
         }
@@ -69,7 +69,7 @@ namespace Maui.Interop
 #if WINDOWS
                 return PInvoke.GetKeyState(VirtualKeyCodes.VK_RBUTTON) < 0;
 #else
-            return false;
+                return false;
 #endif
             }
         }
@@ -82,7 +82,7 @@ namespace Maui.Interop
                 PInvoke.GetCursorPos(out System.Drawing.Point cursorPosition);
                 return new Point(cursorPosition.X, cursorPosition.Y);
 #else
-            return new Point();
+                return new Point();
 #endif
             }
         }

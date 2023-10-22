@@ -3,7 +3,6 @@ using Maui.SmartWindow.Core;
 using Microsoft.Maui.Handlers;
 using Microsoft.Maui.Platform;
 using Microsoft.UI.Windowing;
-using System.Diagnostics;
 
 namespace Maui.SmartWindow;
 
