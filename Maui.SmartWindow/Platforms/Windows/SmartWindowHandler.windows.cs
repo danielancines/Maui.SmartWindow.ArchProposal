@@ -3,6 +3,7 @@ using Maui.SmartWindow.Core;
 using Microsoft.Maui.Handlers;
 using Microsoft.Maui.Platform;
 using Microsoft.UI.Windowing;
+using Windows.ApplicationModel.DataTransfer;
 
 namespace Maui.SmartWindow;
 
@@ -91,7 +92,22 @@ public partial class SmartWindowHandler : WindowHandler
         if (this._appWindow.Presenter is OverlappedPresenter presenter)
             presenter.SetBorderAndTitleBar(true, false);
 
+        var window = this.VirtualView as Window;
+        if (window == null)
+            return;
+
+        //Error on resize on Windows 11
+        //https://github.com/microsoft/microsoft-ui-xaml/issues/8707
+        var width = window.Width;
+        var height = window.Height;
+        window.Height = 4000;
+        window.Width = 4000;
+
         InteropHelper.SetParent(this.VirtualView as Window, this._smartWindow.ParentWindow as Window);
+
+        //Error on resize on Windows 11
+        //https://github.com/microsoft/microsoft-ui-xaml/issues/8707
+        this._appWindow.Resize(new Windows.Graphics.SizeInt32((int)width, (int)height));
     }
 
     private void SetPosition(IWindowHandler handler, IWindow window, object parameter)

@@ -11,4 +11,6 @@ public interface ISmartWindow
     void Close();
     double MdiX { get; set; }
     double MdiY { get; set; }
+    double Width { get; set; }
+    double Height { get; set; }
 }
