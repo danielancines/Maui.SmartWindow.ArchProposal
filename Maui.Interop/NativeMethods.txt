@@ -2,3 +2,5 @@
 SetWindowLong
 GetWindowRect
 ScreenToClient
+GetKeyState
+GetCursorPos
