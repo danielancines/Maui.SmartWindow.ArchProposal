@@ -1,9 +1,10 @@
 ﻿using Maui.Interop;
 using Maui.SmartWindow.Core;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui.Controls.Platform;
 using Microsoft.Maui.Handlers;
 using Microsoft.Maui.Platform;
 using Microsoft.UI.Windowing;
-using Windows.ApplicationModel.DataTransfer;
 
 namespace Maui.SmartWindow;
 
@@ -108,6 +109,42 @@ public partial class SmartWindowHandler : WindowHandler
         //Error on resize on Windows 11
         //https://github.com/microsoft/microsoft-ui-xaml/issues/8707
         this._appWindow.Resize(new Windows.Graphics.SizeInt32((int)width, (int)height));
+
+
+        if (this.VirtualView is SmartWindow smartWindow)
+        {
+            //var nativeWindow = (uiXaml.Window)App.Current.Windows.First().Handler.PlatformView;
+            //var nativeElement = (uiXaml.UIElement)element.Handler.PlatformView;
+            //var coordinates = nativeElement.TransformToVisual(nativeWindow.Content)
+            //                                .TransformPoint(new Windows.Foundation.Point(0, 0));
+
+            //var navBarHeight = (App.Current.MainPage is NavigationPage navPage && navPage.CurrentPage != null)
+            //                 ? navPage.Height - navPage.CurrentPage.Height : 0;
+
+            //return new Point((int)Math.Round(coordinates.X),
+            //                 (int)Math.Round(coordinates.Y - navBarHeight));
+
+            var parentWindow = (smartWindow.ParentWindow.Handler.PlatformView as Microsoft.UI.Xaml.Window);
+            var parentPage = (smartWindow.ParentWindow as Window).Page as Shell;
+
+            var currentPage = parentPage.CurrentPage as ContentPage;
+            var horizontalStackLayout = currentPage.Content as HorizontalStackLayout;
+            var button = horizontalStackLayout.Children[0] as Button;
+
+
+            var buttonPlatformView = button.Handler.PlatformView as Microsoft.Maui.Platform.MauiButton;
+            var buttonPosition = buttonPlatformView.TransformToVisual(parentWindow.Content).TransformPoint(new Windows.Foundation.Point(0, 0));
+
+            var navBarHeight = (currentPage as NavigationPage).Height;
+
+
+
+            var containerPlatformView = smartWindow.ParentWindow.Content.Handler.PlatformView as Microsoft.UI.Xaml.UIElement;
+            var point = containerPlatformView.TransformToVisual(parentWindow.Content).TransformPoint(new Windows.Foundation.Point(0, 0));
+
+
+            var a = this.PlatformView.Content.TransformToVisual(this.PlatformView.Content).TransformPoint(new Windows.Foundation.Point(10,10));
+        }
     }
 
     private void SetPosition(IWindowHandler handler, IWindow window, object parameter)
