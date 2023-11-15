@@ -1,4 +1,5 @@
-﻿using Maui.SmartWindow.Core;
+﻿using Maui.Interop;
+using Maui.SmartWindow.Core;
 
 namespace Maui.SmartWindow;
 public partial class SmartWindow : Window, ISmartWindow, IDisposable
@@ -25,6 +26,20 @@ public partial class SmartWindow : Window, ISmartWindow, IDisposable
     public SmartWindow(ContentPage page)
     {
         this.Page = page;
+    }
+
+    private void SmartWindow_Created(object sender, EventArgs e)
+    {
+#if WINDOWS
+        var parentHandle1 = InteropHelper.GetParent((this.Handler.PlatformView as MauiWinUIWindow).WindowHandle);
+#endif
+    }
+
+    private void SmartWindow_Destroying(object sender, EventArgs e)
+    {
+#if WINDOWS
+        //var result = InteropHelper.ResetParent((this.Handler.PlatformView as MauiWinUIWindow).WindowHandle);
+#endif
     }
 
     #endregion
@@ -100,8 +115,8 @@ public partial class SmartWindow : Window, ISmartWindow, IDisposable
 
     private void HookParentWindowEvents(IWindow parentWindow)
     {
-        if (parentWindow is Window window)
-            window.Destroying += ParentWindow_Destroying;
+        //if (parentWindow is Window window)
+        //    window.Destroying += ParentWindow_Destroying;
     }
 
     private void ParentWindow_Destroying(object sender, EventArgs e)
@@ -120,14 +135,29 @@ public partial class SmartWindow : Window, ISmartWindow, IDisposable
 
     #region Public Methods
 
+    public void ResetParent()
+    {
+#if WINDOWS
+        var result = InteropHelper.ResetParent((this.Handler.PlatformView as MauiWinUIWindow).WindowHandle);
+#endif
+    }
+
     public void Show()
     {
         Application.Current.OpenWindow(this);
+
+#if WINDOWS
+        var parentHandle1 = InteropHelper.GetParent((this.Handler.PlatformView as MauiWinUIWindow).WindowHandle);
+#endif
     }
 
     public void Close()
     {
+#if WINDOWS
+        (this.Handler.PlatformView as MauiWinUIWindow).Close();
+#endif
         Application.Current.CloseWindow(this);
+
     }
 
     public void Dispose()

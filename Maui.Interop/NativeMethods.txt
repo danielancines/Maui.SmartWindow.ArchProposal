@@ -1,4 +1,5 @@
 ﻿SetParent
+GetParent
 SetWindowLong
 GetWindowRect
 ScreenToClient

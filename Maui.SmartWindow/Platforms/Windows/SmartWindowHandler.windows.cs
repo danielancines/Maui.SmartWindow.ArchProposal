@@ -3,7 +3,8 @@ using Maui.SmartWindow.Core;
 using Microsoft.Maui.Handlers;
 using Microsoft.Maui.Platform;
 using Microsoft.UI.Windowing;
-using Windows.ApplicationModel.DataTransfer;
+using Maui.Interop.Extensions;
+using System.Reflection;
 
 namespace Maui.SmartWindow;
 
@@ -14,6 +15,7 @@ public partial class SmartWindowHandler : WindowHandler
     private bool _updatingPositionByPointer;
     private AppWindow _appWindow;
     private ISmartWindow _smartWindow;
+    private nint _windowHandle;
 
     #endregion
 
@@ -22,15 +24,22 @@ public partial class SmartWindowHandler : WindowHandler
     protected override void ConnectHandler(Microsoft.UI.Xaml.Window platformView)
     {
         base.ConnectHandler(platformView);
-        this.InitializeMainFields();
-        this.HookEvents(platformView);
+        //this.InitializeMainFields();
+        //this.HookEvents(platformView);
 
-        if (this._smartWindow.IsMDIChild)
-            this.InitializeWindowAsMDIChild();
+        //if (this._smartWindow.IsMDIChild)
+        //    this.InitializeWindowAsMDIChild();
+
+        //if (this.VirtualView.Handler.PlatformView is MauiWinUIWindow mauiWinUIWindow)
+        //    this._windowHandle = mauiWinUIWindow.GetWindowHandle();
     }
 
     protected override void DisconnectHandler(Microsoft.UI.Xaml.Window platformView)
     {
+        var mapperPropertyInfo = typeof(CommandMapper).GetField("_mapper", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        Dictionary<string, Action<IElementHandler, IElement, object>> mapper = mapperPropertyInfo.GetValue(CommandMapper) as Dictionary<string, Action<IElementHandler, IElement, object>>;
+        mapper.Clear();
+
         this.UnHookEvents(platformView);
         base.DisconnectHandler(platformView);
     }
@@ -88,9 +97,9 @@ public partial class SmartWindowHandler : WindowHandler
 
     private void InitializeWindowAsMDIChild()
     {
-        (this.PlatformView as MauiWinUIWindow).ExtendsContentIntoTitleBar = false;
+        //(this.PlatformView as MauiWinUIWindow).ExtendsContentIntoTitleBar = false;
         if (this._appWindow.Presenter is OverlappedPresenter presenter)
-            presenter.SetBorderAndTitleBar(true, false);
+            presenter.SetBorderAndTitleBar(true, true);
 
         var window = this.VirtualView as Window;
         if (window == null)

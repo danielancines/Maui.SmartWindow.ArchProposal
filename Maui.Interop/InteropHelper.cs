@@ -15,9 +15,38 @@ namespace Maui.Interop
 
 #if WINDOWS
             var childHandle = child.GetHandle();
-            var parentHandle = parent.GetHandle();
+
+            var parentHandle = HWND.Null;
+
+            if (parent != null)
+                parentHandle = parent.GetHandle();
+
+
             PInvoke.SetParent(childHandle, parentHandle);
-            PInvoke.SetWindowLong(childHandle, Windows.Win32.UI.WindowsAndMessaging.WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE, -20);
+            //PInvoke.SetWindowLong(childHandle, Windows.Win32.UI.WindowsAndMessaging.WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE, -20);
+
+            var parentHandle1 = PInvoke.GetParent(childHandle);
+#endif
+        }
+
+        public static bool ResetParent(nint windowHandle)
+        {
+
+#if WINDOWS
+            var parentHandle1 = PInvoke.GetParent(new HWND(windowHandle));
+            return PInvoke.SetParent(new HWND(windowHandle), HWND.Null) == HWND.Null ? false : true;
+#else
+            return false;
+#endif
+        }
+
+        public static nint GetParent(nint windowHandle)
+        {
+
+#if WINDOWS
+            return PInvoke.GetParent(new HWND(windowHandle)).Value;
+#else
+            return 0;
 #endif
         }
 
