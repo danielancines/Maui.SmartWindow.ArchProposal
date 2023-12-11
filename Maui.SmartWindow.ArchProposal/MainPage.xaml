@@ -1,33 +1,44 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:Maui.SmartWindow.ArchProposal.Views"
              x:Class="Maui.SmartWindow.ArchProposal.MainPage">
 
-    <HorizontalStackLayout
+    <Grid RowDefinitions="Auto,*,Auto">
+        <HorizontalStackLayout
             VerticalOptions="Start">
 
-        <Button
+            <Button
                 x:Name="OpenNewWindowButton"
                 Text="Open New Window"
                 Clicked="OpenNewWindowButton_Clicked"/>
 
-        <Button
+            <Button
+                x:Name="OpenNewExternalWindowButton"
+                Text="Open New Window External"
+                Clicked="OpenNewExternalWindowButton_Clicked"/>
+
+            <Button
                 x:Name="AddContentButton"
                 Text="Add Content"
                 Clicked="AddContentButton_Clicked"/>
 
-        <Button x:Name="CloseWindowButton"
+            <Button x:Name="CloseWindowButton"
                     Text="Close Window"
                     Clicked="CloseWindowButton_Clicked"/>
 
-        <Button x:Name="SetParentButton"
+            <Button x:Name="SetParentButton"
                     Text="Set Parent"
                     Clicked="SetParentButton_Clicked"/>
 
-        <Button x:Name="SetPositionButton"
+            <Button x:Name="SetPositionButton"
                     Text="Set Position"
                     Clicked="SetPositionButton_Clicked"/>
 
-    </HorizontalStackLayout>
+        </HorizontalStackLayout>
+
+        <ContentView x:Name="MyContentView" Grid.Row="1" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand"/>
+        <Label Grid.Row="2" x:Name="MyWindowHashLabel"/>
+    </Grid>
 
 </ContentPage>

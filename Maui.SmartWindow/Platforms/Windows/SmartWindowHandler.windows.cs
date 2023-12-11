@@ -47,9 +47,7 @@ public partial class SmartWindowHandler : WindowHandler
                 return;
 
             if (!smartWindow.IsMDIChild)
-                throw new InvalidOperationException("MdiX cannot be used if SmartWindow is not a MDIChild, use X property");
-
-            smartWindowHandler.UpdatePosition((int)smartWindow.MdiX, (int)smartWindow.MdiY);
+                smartWindowHandler.UpdatePosition((int)smartWindow.MdiX, (int)smartWindow.MdiY);
         }
     }
 
@@ -61,9 +59,7 @@ public partial class SmartWindowHandler : WindowHandler
                 return;
 
             if (!smartWindow.IsMDIChild)
-                throw new InvalidOperationException("MdiY cannot be used if SmartWindow is not a MDIChild, use Y property");
-
-            smartWindowHandler.UpdatePosition((int)smartWindow.MdiX, (int)smartWindow.MdiY);
+                smartWindowHandler.UpdatePosition((int)smartWindow.MdiX, (int)smartWindow.MdiY);
         }
     }
 
